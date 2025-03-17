@@ -1413,6 +1413,24 @@ class DeviceWatcher extends utils.Adapter {
 							if (linkQuality !== ' - ') linkQuality = '0%'; // set linkQuality to nothing
 						}
 						break;
+					case 'alexa2':
+						if (this.configMaxMinutes[adapterID] <= 0) {
+							await new Promise(r => setTimeout(r, 200)); // Wait 200 milliseconds as Alexa devices sometimes report offline for a few milliseconds
+							var alexaDeviceUnreachState = await this.getForeignStateAsync(unreachDP);
+							if (!deviceUnreachState && !state.val) {
+								deviceState = 'Offline'; //set online state to offline
+								if (linkQuality !== ' - ') linkQuality = '0%'; // set linkQuality to nothing
+							}
+						} else if (lastContact && lastContact > this.configMaxMinutes[adapterID]) {
+							var alexaDeviceUnreachState = await this.getForeignStateAsync(unreachDP);
+							if(!alexaDeviceUnreachState) // Adding this check as otherwise all Alexa devices will report unavailable after 1 hours despite all devices being online but their state state has not been updated for 1 hour.
+							{
+								this.log.info("lastContact for " + timeSelector + ": " + lastContact + " - typeof: " + typeof(lastContact));
+								deviceState = 'Offline'; //set online state to offline
+								if (linkQuality !== ' - ') linkQuality = '0%'; // set linkQuality to nothing
+							}
+						}
+						break;
 					default:
 						if (this.configMaxMinutes[adapterID] <= 0) {
 							if (!deviceUnreachState) {
