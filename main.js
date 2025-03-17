@@ -1420,6 +1420,7 @@ class DeviceWatcher extends utils.Adapter {
 								if (linkQuality !== ' - ') linkQuality = '0%'; // set linkQuality to nothing
 							}
 						} else if (lastContact && lastContact > this.configMaxMinutes[adapterID]) {
+							this.log.info("lastContact for " + timeSelector + ": " + lastContact + " - typeof: " + typeof(lastContact));
 							deviceState = 'Offline'; //set online state to offline
 							if (linkQuality !== ' - ') linkQuality = '0%'; // set linkQuality to nothing
 						}
